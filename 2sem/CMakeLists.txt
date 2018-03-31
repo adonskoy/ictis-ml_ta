@@ -4,6 +4,6 @@ project(assigment_1)
 set(CMAKE_CXX_STANDARD 11)
 
 
-#add_executable(assignment-4_task-1_1.cxx task-1_1.cxx)
+add_executable(local_extremes.cpp local_extremes.cpp)
 
 
