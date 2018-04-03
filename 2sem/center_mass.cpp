@@ -6,7 +6,7 @@
 #include <math.h>
 using namespace std;
 
-int **read_mass_binary(const char* file_name,int *n, int *k, int *r) {
+int **read_mass_binary(const char* file_name, int *n, int *k, int *r) {
     ifstream instr(file_name, ios::in | ios::binary);
     instr.read((char *) n, sizeof(int));
     instr.read((char *) k, sizeof(int));
@@ -14,8 +14,8 @@ int **read_mass_binary(const char* file_name,int *n, int *k, int *r) {
     for (int i(0); i < *n; ++i) {
         mass[i] = new int[*k];
     }
-    for (int i = 0; i < *n; ++i) {
-        for (int j = 0; j < *k; ++j) {
+    for (int i(0); i < *n; ++i) {
+        for (int j(0); j < *k; ++j) {
             instr.read((char *) &mass[i][j], sizeof(int));
         }
     }
@@ -23,7 +23,7 @@ int **read_mass_binary(const char* file_name,int *n, int *k, int *r) {
     return mass;
 }
 
-void write_mass_binary(const char* file_name,int* mass, int count) {
+void write_mass_binary(const char* file_name, int* mass, int count) {
     ofstream outstr(file_name, ios::out | ios::binary);
     outstr.write((char *) &count, sizeof(int));
     outstr.write((char *) mass, sizeof(int) * count);
@@ -34,7 +34,6 @@ int * getCM(int *n, int *k, int **mass) {
     for (int i(0); i < *k; ++i) {
         cm[i] = 0;
     }
-
     for (int i(0); i < *k; ++i) {
         for (int j(0); j < *n; ++j) {
             cm[i] += mass[j][i];
@@ -51,17 +50,13 @@ int getRadius(int * cm, int * point, int k){
     }
     r=sqrt(r);
     return r;
-
 }
 
 int main() {
-    int n, k;
-    int r;
+    int n, k, r, cc = 2, countPM = 0;
     int **mass = read_mass_binary("input.bin", &n, &k, &r);
     int *cm = getCM(&n, &k, mass);
     int pm[n];
-    int countPM = 0;
-
     for (int i(0); i < n; ++i) {
         if (getRadius(cm, mass[i], k) <= r) {
             pm[countPM] = i;
@@ -69,9 +64,7 @@ int main() {
         }
     }
     auto *output = new int[2 + countPM * k];
-    output[0] = n;
-    output[1] = k;
-    int cc = 2;
+    output[0] = n, output[1] = k;
     for (int i(0); i < countPM; ++i) {
         for (int j(0); j < k; ++j) {
             output[cc] = mass[pm[i]][j];
@@ -79,5 +72,4 @@ int main() {
         }
     }
     write_mass_binary("output.bin", output, cc);
-
 }
