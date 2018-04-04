@@ -10,3 +10,5 @@ add_executable(txt2bin.cpp txt2bin.cpp)
 
 add_executable(dif_of_sets dif_of_sets.cpp)
 add_executable(intersection_of_sets.cpp intersection_of_sets.cpp)
+
+add_subdirectory(phone_numbers)
