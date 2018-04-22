@@ -20,6 +20,7 @@ int **read_mass_binary(const char* file_name, int *n, int *k, int *r) {
         }
     }
     instr.read((char *) r, sizeof(int));
+    cout<<*r;
     return mass;
 }
 
@@ -63,6 +64,7 @@ int main() {
             countPM++;
         }
     }
+
     auto *output = new int[2 + countPM * k];
     output[0] = n, output[1] = k;
     for (int i(0); i < countPM; ++i) {
@@ -71,5 +73,6 @@ int main() {
             cc++;
         }
     }
+
     write_mass_binary("output.bin", output, cc);
 }

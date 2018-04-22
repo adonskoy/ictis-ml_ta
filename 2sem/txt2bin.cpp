@@ -28,7 +28,7 @@ int *read_mass(const char* file_name, int *size) {
 
 void write_mass_binary(const char* file_name,int* mass,int count) {
     ofstream outstr(file_name, ios::out | ios::binary);
-    outstr.write((char *) mass, sizeof(int) * count);
+    outstr.write((char*)mass, sizeof(char) * count);
 }
 
 int main() {
