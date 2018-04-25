@@ -1,5 +1,5 @@
 //
-// Created by Антон Донской on 17.04.2018.
+// Created by Антон Донской on 25.04.2018.
 //
 
 /*
@@ -31,17 +31,26 @@
 #include <fstream>
 #include <string>
 #include <cstdio>
-#include "file_manager.h"
+#include <cmath>
+
 using namespace std;
 
 
 
-
-    explicit FM::FM(char *file_name_t, char mode_t = 'r', char type_t = 't') {
+class FM {
+private:
+    fstream stream;
+    char mode{};
+    char type{};
+    char *file_name{};
+    string bin_extention = ".bin";
+    string txt_extention = ".txt";
+public:
+    explicit FM(char *file_name_t, char mode_t = 'r', char type_t = 't') {
         open_file(file_name_t, mode_t, type_t);
     }
 
-    void FM::open_file(char *file_name_t, char mode_t = 'r', char type_t = 't') {
+    void open_file(char *file_name_t, char mode_t = 'r', char type_t = 't') {
         if (mode_t == 'w') {
             if (type_t == 't') {
                 stream.open(file_name_t, fstream::out);
@@ -66,12 +75,12 @@ using namespace std;
         file_name = file_name_t;
     }
 
-    FM::~FM() {
+    ~FM() {
         stream.close();
     }
 
     template<class T>
-    void FM::read_struct_binary(T CurrentStructure) {
+    void read_struct_binary(T CurrentStructure) {
         if (type == 'b' && mode == 'r') {
             stream.read((char *) &CurrentStructure, sizeof(CurrentStructure));
         } else {
@@ -80,7 +89,7 @@ using namespace std;
     }
 
     template<class T>
-    void FM::write_struct_binary(T CurrentStructure) {
+    void write_struct_binary(T CurrentStructure) {
         if (type == 'b' && mode == 'w') {
             stream.write((char *) &CurrentStructure, sizeof(CurrentStructure));
         } else {
@@ -89,7 +98,7 @@ using namespace std;
     }
 
     template<typename T>
-    void FM::get_c(T &tmp) {
+    void get_c(T &tmp) {
         if (mode == 'r') {
             if (type == 't') {
                 stream >> tmp;
@@ -103,7 +112,7 @@ using namespace std;
     }
 
     template<typename T>
-    void FM::write_c(T tmp) {
+    void write_c(T tmp) {
         if (mode == 'w') {
             if (type == 't') {
 
@@ -116,11 +125,11 @@ using namespace std;
         }
     }
 
-//    fstream FM::*get_pointer() {
-//        return stream;
-//    }
+    fstream *get_pointer() {
+        return &stream;
+    }
 
-    void FM::close_file(bool for_renaming = false) {
+    void close_file(bool for_renaming = false) {
         stream.close();
         if (!for_renaming) {
             mode = NULL;
@@ -128,7 +137,7 @@ using namespace std;
         }
     }
 
-    void FM::rename_file(char *new_name) {
+    void rename_file(char *new_name) {
         int result;
         this->close_file();
         result = rename(file_name, new_name);
@@ -140,15 +149,14 @@ using namespace std;
         this->open_file(file_name, mode, type);
     }
 
-    void FM::delete_file() {
+    void delete_file() {
         this->close_file();
         if (remove(file_name) != 0)
             throw ("Error deleting file");
     }
 
     template<typename T>
-    void FM::text2bin(string new_file_name = "", bool delete_file = false) {
-        cout<<"[WARNING] Last element may be duplicated"<<endl;
+    void text2bin(string new_file_name = "", bool delete_file = false) {
         if (new_file_name == "") {
             new_file_name = (string) file_name + bin_extention;
         }
@@ -156,7 +164,6 @@ using namespace std;
         while (stream) {
             T tmp;
             stream >> tmp;
-//            stream.get(tmp);
             bf.write((char *) &tmp, sizeof(T));
         }
         bf.close();
@@ -167,16 +174,15 @@ using namespace std;
     }
 
     template<typename T>
-    void FM::bin2txt(string new_file_name = "", bool delete_file = false) {
-        cout<<"[WARNING] Last element may be duplicated"<<endl;
+    void bin2txt(string new_file_name = "", bool delete_file = false) {
         if (new_file_name == "") {
             new_file_name = (string) file_name + txt_extention;
         }
-        fstream bf(new_file_name, fstream::out | fstream::binary);
+        fstream bf(new_file_name, fstream::in | fstream::binary);
         while (stream) {
             T tmp;
             stream.read((char *) &tmp, sizeof(T));
-            bf << tmp << " ";
+            bf << tmp;
         }
         bf.close();
         if (delete_file) {
@@ -184,19 +190,156 @@ using namespace std;
             this->delete_file();
         }
     }
+};
 
-struct EEEEEEE {
-    int a = 232323;
-    int c = 232321243;
-    int b = 121212;
+
+
+struct date {
+    short int d;
+    short int m;
+    short int y;
+};
+
+struct time {
+    short int h;
+    short int m;
+    short int s;
+};
+
+struct datetime {
+    date Date;
+    time Time;
+};
+
+struct My {
+    char FIO[51];
+    char phone_number[16];
+    datetime start_time;
+    int period_in_seconds;
+    float price_per_minute;
+};
+
+bool operator <=(datetime T1, datetime T2) {
+    if (T1.Date.y < T2.Date.y) {
+        return true;
+    } else if (T1.Date.y == T2.Date.y) {
+        if (T1.Date.m < T2.Date.m) {
+            return true;
+        } else if (T1.Date.m == T2.Date.m) {
+            if (T1.Date.d < T2.Date.d) {
+                return true;
+            } else if (T1.Date.d == T2.Date.d) {
+
+                if (T1.Time.h < T2.Time.h) {
+                    return true;
+                } else if (T1.Time.h == T2.Time.h) {
+                    if (T1.Time.m < T2.Time.m) {
+                        return true;
+                    } else if (T1.Time.m == T2.Time.m) {
+                        return T1.Time.s <= T2.Time.s;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
+struct for_dataset {
+    char phone[16];
+    float sum_price = 0;
+    int sum_period = 0;
+    int count = 0;
+};
+
+struct dataset {
+public:
+    auto array = new for_dataset[10000];
+    int size = 0;
+
+    void add(My current) {
+        int ex = exsist(current.phone_number);
+        if (ex != -1) {
+            if (array[ex].count == 3) {
+                array[ex] = NULL;
+            } else {
+                array[ex].count += 1;
+                array[ex].sum_period += current.period_in_seconds;
+                array[ex].sum_price += (current.price_per_minute / 60 * current.period_in_seconds);
+            }
+        } else {
+            array[size].count = 1;
+            array[size].sum_period = current.period_in_seconds;
+            array[size].sum_price = (current.price_per_minute / 60 * current.period_in_seconds);
+        }
+    }
+
+    int exsist(char phone[16]) {
+        for (int i(0); i < size; ++i) {
+            if (array[i].phone == phone) {
+                return i;
+            }
+        }
+        return -1;
+    };
+};
+
+struct for_convert {
+    int cnt;
+    datetime T1;
+    datetime T2;
+    auto array = new My[cnt];
 };
 
 int main() {
-    FM a("/Users/anton/Desktop/maaaain.txt", 'r', 't');
+    FM to_binarnik("input.txt", 'r', 't');
+    to_binarnik.text2bin("input.bin");
+    to_binarnik.close_file();
+    FM file("input.bin", 'r', 'b');
+
+    int n;
+    dataset out{};
+    datetime T1{}, T2{};
+    auto array = new My[n];
+
+    file.get_c(n);
+    file.get_c(T1);
+    file.get_c(T2);
+    file.close_file();
+
+    for (int i(0); i < n; ++i) {
+        file.read_struct_binary(array[i]);
+    }
 
 
-    a.text2bin<int>();
+    for (int i(0); i < n; ++i) {
+        if ((T1 <= array[i].start_time) && (array[i].start_time <= T2)) {
+            out.add(array[i]);
+        }
+    }
 
-    FM b("/Users/anton/Desktop/maaaain.txt.bin", 'r', 'b');
-    b.bin2txt<int>();
+    FM out_file("output.txt", 'w', 't');
+    out_file.write_c(out.size);
+    out_file.write_c("\n");
+    for (int i(0); i < out.size; ++i) {
+        out_file.write_c(out.array[i].phone);
+        out_file.write_c(" ");
+        out.array[i].sum_price = round(out.array[i].sum_price * 100) / 100;
+        out_file.write_c(out.array[i].sum_price);
+        out_file.write_c(" ");
+        out_file.write_c(out.array[i].sum_period);
+        out_file.write_c("\n");
+    }
+
+    return 0;
 }

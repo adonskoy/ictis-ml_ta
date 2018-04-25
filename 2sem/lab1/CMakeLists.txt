@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.8)
-project(assigment_1)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -11,7 +10,6 @@ set(CMAKE_CXX_STANDARD 11)
 #add_executable(dif_of_sets lab2/dif_of_sets.cpp)
 #add_executable(lab2/intersection_of_sets.cpp lab2/intersection_of_sets.cpp)
 
-add_subdirectory(lab1)
-add_subdirectory(lab2)
-add_subdirectory(lab3)
-add_subdirectory(lab4)
+add_subdirectory(center_mass)
+add_subdirectory(local_extremes)
+#add_subdirectory(lab3)

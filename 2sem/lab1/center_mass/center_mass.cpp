@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <math.h>
+#include "../../../utils/file_manager.h"
 using namespace std;
 
 int **read_mass_binary(const char* file_name, int *n, int *k, int *r) {

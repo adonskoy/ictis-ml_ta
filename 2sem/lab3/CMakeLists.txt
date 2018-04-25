@@ -4,5 +4,5 @@ project(assigment_1)
 set(CMAKE_CXX_STANDARD 11)
 
 
-add_executable(phone.cpp phone.cpp)
-add_executable(main.cpp main.cpp)
+#add_executable(phone.cpp phone.cpp)
+add_executable(lab3-phone_numbers main.cpp)
