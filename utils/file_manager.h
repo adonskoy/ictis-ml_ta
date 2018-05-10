@@ -43,7 +43,7 @@ class FM {
 private:
     fstream stream;
     char mode{};
-    char type{};
+    char type_m{};
     char *file_name{};
     string bin_extention = ".bin";
     string txt_extention = ".txt";

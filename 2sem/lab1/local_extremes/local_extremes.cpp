@@ -98,3 +98,17 @@ int main() {
     }
     write("output.txt", result, result_cnt);
 }
+
+
+
+
+
+
+
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+class LocalExtremes{
+
+};

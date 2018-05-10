@@ -48,7 +48,7 @@ using namespace std;
             } else if (type_t == 'b') {
                 stream.open(file_name_t, fstream::out | fstream::binary);
             } else {
-                throw ("Wrong type. Use 't' or 'b' ");
+                throw ("Wrong type_m. Use 't' or 'b' ");
             }
         } else if (mode_t == 'r') {
             if (type_t == 't') {
@@ -56,13 +56,13 @@ using namespace std;
             } else if (type_t == 'b') {
                 stream.open(file_name_t, fstream::in | fstream::binary);
             } else {
-                throw ("Wrong type. Use 't' or 'b' ");
+                throw ("Wrong type_m. Use 't' or 'b' ");
             }
         } else {
             throw ("Wrong mode. Use 'r' or 'w' ");
         }
         mode = mode_t;
-        type = type_t;
+        type_m = type_t;
         file_name = file_name_t;
     }
 
@@ -72,26 +72,26 @@ using namespace std;
 
     template<class T>
     void FM::read_struct_binary(T CurrentStructure) {
-        if (type == 'b' && mode == 'r') {
+        if (type_m == 'b' && mode == 'r') {
             stream.read((char *) &CurrentStructure, sizeof(CurrentStructure));
         } else {
-            throw ("Wrong type or mode. Use mode 'r' and type 'b' ");
+            throw ("Wrong type_m or mode. Use mode 'r' and type_m 'b' ");
         }
     }
 
     template<class T>
     void FM::write_struct_binary(T CurrentStructure) {
-        if (type == 'b' && mode == 'w') {
+        if (type_m == 'b' && mode == 'w') {
             stream.write((char *) &CurrentStructure, sizeof(CurrentStructure));
         } else {
-            throw ("Wrong type or mode. Use mode 'w' and type 'b' ");
+            throw ("Wrong type_m or mode. Use mode 'w' and type_m 'b' ");
         }
     }
 
     template<typename T>
     void FM::get_c(T &tmp) {
         if (mode == 'r') {
-            if (type == 't') {
+            if (type_m == 't') {
                 stream >> tmp;
             } else {
                 stream.read((char *) &tmp, sizeof(T));
@@ -105,7 +105,7 @@ using namespace std;
     template<typename T>
     void FM::write_c(T tmp) {
         if (mode == 'w') {
-            if (type == 't') {
+            if (type_m == 't') {
 
                 stream << tmp;
             } else {
@@ -124,7 +124,7 @@ using namespace std;
         stream.close();
         if (!for_renaming) {
             mode = NULL;
-            type = NULL;
+            type_m = NULL;
         }
     }
 
@@ -137,7 +137,7 @@ using namespace std;
             throw ("Error renaming file");
         }
         file_name = new_name;
-        this->open_file(file_name, mode, type);
+        this->open_file(file_name, mode, type_m);
     }
 
     void FM::delete_file() {

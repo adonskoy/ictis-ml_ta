@@ -33,13 +33,13 @@ int main() {
 }
 
 
-struct date {
+struct My_date {
     short d;
     short m;
     short y;
 };
 
-struct time {
+struct My_time {
     short h;
     short m;
     short s;
@@ -48,6 +48,6 @@ struct time {
 struct New {
     char fio[51];
     char number[16];
-    date Date;
-    time Time;
+    My_date Date;
+    My_time Time;
 };
