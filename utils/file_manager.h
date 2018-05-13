@@ -38,7 +38,7 @@
 using namespace std;
 
 
-
+template<class T>
 class FM {
 private:
     fstream stream;
@@ -80,4 +80,3 @@ public:
     template<typename T>
     void bin2txt(string new_file_name = "", bool delete_file = false);
 };
-

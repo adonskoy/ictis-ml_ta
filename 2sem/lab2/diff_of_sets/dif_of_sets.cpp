@@ -14,6 +14,7 @@ private:
     bool findB(int element);
 
 public:
+    IntersectionOfSets();
     ~IntersectionOfSets();
 
     void read(const char *file_name);
@@ -24,20 +25,31 @@ public:
     void write(const char *file_name);
 };
 
+IntersectionOfSets::IntersectionOfSets() = default;
+
+IntersectionOfSets::~IntersectionOfSets() {
+    delete[] SetA;
+    delete[] SetB;
+    delete[] SetC;
+}
+
 void IntersectionOfSets::read(const char* file_name) {
     ifstream instr(file_name, ios::in);
-    instr >> SizeA;
-    instr >> SizeB;
+    if(instr.is_open()) {
+        instr >> SizeA;
+        instr >> SizeB;
 
-    SetA = new int[SizeA];
-    SetB = new int[SizeB];
-    for (int i(0); i < SizeA; ++i) {
-        instr >> SetA[i];
+        SetA = new int[SizeA];
+        SetB = new int[SizeB];
+        for (int i(0); i < SizeA; ++i) {
+            instr >> SetA[i];
+        }
+        for (int i(0); i < SizeB; ++i) {
+            instr >> SetB[i];
+        }
+    } else {
+        cout << "Cant open " << file_name << endl;
     }
-    for (int i(0); i < SizeB; ++i) {
-        instr >> SetB[i];
-    }
-
     instr.close();
 }
 
@@ -62,19 +74,18 @@ bool IntersectionOfSets::findB(int element) {
 
 void IntersectionOfSets::write(const char* file_name) {
     ofstream outstr(file_name, ios::out | ios::binary);
-    outstr.write((char *) &SizeC, sizeof(int));
-    cout<<SizeC<<endl;
-    for (int i(0); i < SizeC; ++i) {
-        outstr.write((char *) &SetC[i], sizeof(int));
-        cout<<SetC[i]<<" ";
+    if(outstr.is_open()) {
+        outstr.write((char *) &SizeC, sizeof(int));
+        for (int i(0); i < SizeC; ++i) {
+            outstr.write((char *) &SetC[i], sizeof(int));
+        }
+    } else {
+        cout << "Cant open " << file_name << endl;
     }
+    outstr.close();
 }
 
-IntersectionOfSets::~IntersectionOfSets() {
-    delete[] SetA;
-    delete[] SetB;
-    delete[] SetC;
-}
+
 void createTxt(const char* input, const char* output) {
     ifstream inp(input, ios::in | ios::binary);
     ofstream out(output, ios::out);

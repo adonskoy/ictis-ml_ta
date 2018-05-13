@@ -3,15 +3,15 @@
 //
 #include <iostream>
 #include <fstream>
-#include <math.h>
+#include <cmath>
 
 using namespace std;
 
 class CM {
 private:
-    int n, k, R, **Dots, **Result, SizeResult = 0;
+    int n{}, k{}, R{}, **Dots{}, **Result{}, SizeResult = 0;
 
-    int getRadius(int *cm, int *Dots);
+    int getRadius(int *cm, int *Dot);
 
     int *getCM();
 
@@ -20,22 +20,28 @@ public:
 
 
     void findDots();
+
     void write(const char *file_name);
 };
 
 void CM::read(const char * file_name) {
     ifstream instr(file_name, ios::in | ios::binary);
-    instr.read((char *) &n, sizeof(int));
-    instr.read((char *) &k, sizeof(int));
-    instr.read((char *) &R, sizeof(int));
-    Dots = new int *[n];
-    for (int i(0); i < n; ++i) {
-        Dots[i] = new int[k];
-    }
-    for (int i(0); i < n; ++i) {
-        for (int j(0); j < k; ++j) {
-            instr.read((char *) &Dots[i][j], sizeof(int));
+    if(instr.is_open()) {
+        instr.read((char *) &n, sizeof(int));
+        instr.read((char *) &k, sizeof(int));
+        instr.read((char *) &R, sizeof(int));
+        Dots = new int *[n];
+        for (int i(0); i < n; ++i) {
+            Dots[i] = new int[k];
         }
+
+        for (int i(0); i < n; ++i) {
+            for (int j(0); j < k; ++j) {
+                instr.read((char *) &Dots[i][j], sizeof(int));
+            }
+        }
+    } else {
+        cout << "Cant open " << file_name << endl;
     }
     instr.close();
 }
@@ -60,13 +66,13 @@ int CM::getRadius(int * cm, int * Dot) {
     for (int i(0); i < k; ++i) {
         r += pow(cm[i] - Dot[i], 2);
     }
-    r = sqrt(r);
+    r = static_cast<int>(sqrt(r));
     return r;
 }
 
 void CM::findDots() {
     int *cm = getCM();
-    Dots = new int *[n];
+    Result = new int *[n];
     for (int i(0); i < n; ++i) {
         if (getRadius(cm, Dots[i]) <= R) {
             Result[SizeResult] = Dots[i];
@@ -77,9 +83,17 @@ void CM::findDots() {
 
 void CM::write(const char* file_name) {
     ofstream outstr(file_name, ios::out | ios::binary);
-    outstr.write((char *) &SizeResult, sizeof(int));
-    for (int i(0); i < SizeResult; ++i) {
-        outstr.write((char *) &Result[i], sizeof(int) * k);
+    if(outstr.is_open()) {
+
+
+        outstr.write((char *) &SizeResult, sizeof(int));
+        for (int i(0); i < SizeResult; ++i) {
+            for (int j(0); j < k; ++j) {
+                outstr.write((char *) &Result[i][j], sizeof(int));
+            }
+        }
+    } else {
+        cout << "Cant open " << file_name << endl;
     }
     outstr.close();
 }
@@ -103,7 +117,7 @@ void createTxt(const char* input, const char* output) {
     while (inp) {
         int tmp;
         inp.read((char *) &tmp, sizeof(int));
-        out << tmp;
+        out << tmp << " ";
 
     }
     inp.close();

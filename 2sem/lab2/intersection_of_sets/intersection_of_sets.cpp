@@ -2,30 +2,6 @@
 // Created by Антон Донской on 03.04.2018.
 //
 
-#include <iostream>
-#include <fstream>
-using namespace std;
-
-
-
-
-
-//int main() {
-//    int n;
-//    int **mass = read("input.bin", &n);
-//    int count = mass[0][0];
-//    intersection(&n, mass, &count);
-//    write("output.txt", mass, &count);
-//    return 0;
-//}
-//
-//
-
-
-
-//
-// Created by Антон Донской on 01.04.2018.
-//
 
 #include <iostream>
 #include <fstream>
@@ -50,19 +26,24 @@ public:
 
 void IntersectionOfSets::read(const char *file_name) {
     ifstream instr(file_name, ios::in | ios::binary);
-    instr.read((char *) &count, sizeof(int));
-    Sizes = new int[count];
-    Sets = new int *[count];
-    for (int i(0); i < count; ++i) {
-        instr.read((char *) &Sizes[i], sizeof(int));
-        Sets[i] = new int[Sizes[i]];
-    }
-
-    for (int i(0); i < count; ++i) {
-        for (int j(0); j < Sizes[i]; ++j) {
-            instr.read((char *) &Sets[i][j], sizeof(int));
+    if(instr.is_open()) {
+        instr.read((char *) &count, sizeof(int));
+        Sizes = new int[count];
+        Sets = new int *[count];
+        for (int i(0); i < count; ++i) {
+            instr.read((char *) &Sizes[i], sizeof(int));
+            Sets[i] = new int[Sizes[i]];
         }
+
+        for (int i(0); i < count; ++i) {
+            for (int j(0); j < Sizes[i]; ++j) {
+                instr.read((char *) &Sets[i][j], sizeof(int));
+            }
+        }
+    } else {
+        cout << "Cant open " << file_name << endl;
     }
+    instr.close();
 }
 bool IntersectionOfSets::findIn(int element, const int *set, int size) {
     for (int i(0); i < size; ++i) {
@@ -92,9 +73,13 @@ void IntersectionOfSets::intersection() {
 
 void IntersectionOfSets::write(const char* file_name) {
     ofstream outstr(file_name, ios::out);
-    outstr << SizeResult << endl;
-    for (int i = 0; i < SizeResult; i++) {
-        outstr << result[i] << " ";
+    if(outstr.is_open()) {
+        outstr << SizeResult << endl;
+        for (int i = 0; i < SizeResult; i++) {
+            outstr << result[i] << " ";
+        }
+    } else {
+        cout << "Cant open " << file_name << endl;
     }
     outstr.close();
 }
@@ -139,3 +124,4 @@ int main() {
     Problem.write("output.txt");
     return 0;
 }
+
