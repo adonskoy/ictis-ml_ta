@@ -9,6 +9,7 @@
 #include <cmath>
 #include "DateTime.h"
 #include <iostream>
+#include <set>
 
 using namespace std;
 
@@ -36,6 +37,7 @@ public:
     float _sumPrice = 0;
     int _sumPeriod = 0;
     int _count = 0;
+    std::set<string> _abonents;
 };
 
 
@@ -57,6 +59,7 @@ public:
     bool CountOfCalls(const string &number);
 
     void initArray();
+    ~DataSet();
 };
 
 
@@ -85,16 +88,21 @@ void DataSet::input(const char *file_name) {
 void DataSet::select() {
     for (int i(0); i < n; ++i) {
         if ((T1 <= _array[i]._startTime) && (_array[i]._startTime <= T2)) {
+
             _data[string(_array[i]._phoneNumber)]._count++;
             _data[string(_array[i]._phoneNumber)]._sumPeriod += _array[i]._periodInSeconds;
             _data[string(_array[i]._phoneNumber)]._sumPrice += ceil(
                     _array[i]._pricePerMinute * 100 / 60 * _array[i]._periodInSeconds
             ) / 100;
+            _data[string(_array[i]._phoneNumber)]._abonents.insert(_array[i]._FIO);
+
         }
     }
+
     for (auto p : _data) {
         if (!CountOfCalls(p.first)) {
             _data.erase(p.first);
+//            _data.end();
         }
     }
     cout << "[INFO]\t" << _data.size() << " outgoing calls selected" << endl;
@@ -118,7 +126,7 @@ void DataSet::output(const char *file_name) {
             }
         } else {
             for (auto p : _data) {
-                output << p.first << " " << p.second._count << endl;
+                output << p.first << " " << p.second._abonents.size() << endl;
             }
         }
     } else {
@@ -132,6 +140,7 @@ void DataSet::output(const char *file_name) {
 void DataSet::initArray() {
     _array = new Call[n];
 }
+
 
 void make_bin_file(const char *input_file_name, const char *output_file_name ) {
     ifstream input(input_file_name, ios::in);
@@ -196,4 +205,8 @@ void Config::read(const char * file_name) {
 
 Config::Config() {
     read();
+}
+
+DataSet::~DataSet() {
+    delete[] _array;
 }
