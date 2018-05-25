@@ -33,6 +33,7 @@ void Selection::input(const char *file_name) {
 
     } else {
         std::cout << "Cant open " << file_name << std::endl;
+        exit(EXIT_FAILURE);
     }
     input.close();
 }
@@ -52,6 +53,7 @@ void Selection::output(const char *file_name) {
         }
     } else {
         std::cout << "Cant open " << file_name << std::endl;
+        exit(EXIT_FAILURE);
     }
     output.close();
 }
