@@ -1,0 +1,1 @@
+add_executable(lab4-oc main.cpp DateTime.h DataSet.h)
